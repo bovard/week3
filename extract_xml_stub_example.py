@@ -72,13 +72,15 @@ def main():
 			page_id = child.find('id').text
 			if page_title.startswith(('America', 'Afghanistan')):
 				count += 1
-				contributor = child.find('contributor')
-				username = contributor.find('username').text
-				user_id = contributor.find('id').text
-
 				ftitle.write('{}, {}\n'.format(page_id, page_title))
-				fuser.write('{}, {}\n'.format(user_id, username))
-				ftile_user.write('{}, {}\n'.format(page_id, user_id))
+
+				contributor = child.find('contributor')
+				if contributor:
+					username = contributor.find('username').text
+					user_id = contributor.find('id').text
+
+					fuser.write('{}, {}\n'.format(user_id, username))
+					ftile_user.write('{}, {}\n'.format(page_id, user_id))
 
 		ftitle.close()	
 		fuser.close()	
