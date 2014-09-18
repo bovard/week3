@@ -48,6 +48,7 @@ def parseXmlFile(fname):
 	return tree
 
 
+
 def main():
 	# open up the output files
 	ftitle = open("pages.txt", 'w')
@@ -67,8 +68,17 @@ def main():
 			# to find the direct children of the page element
 			# see https://docs.python.org/2/library/xml.etree.elementtree.html
 			# for a tutorial on the elementtree library
-			print child.tag
-		
+			page_title = child.find('title').text
+			page_id = child.find('id').text
+			if page_title.startswith(('America', 'Afghanistan')):
+				count += 1
+				contributor = child.find('contributor')
+				username = contributor.find('username').text
+				user_id = contributor.find('id').text
+
+				ftitle.write('{}, {}\n'.format(page_id, page_title))
+				fuser.write('{}, {}\n'.format(user_id, username))
+				ftile_user.write('{}, {}\n'.format(page_id, user_id))
 
 		ftitle.close()	
 		fuser.close()	
