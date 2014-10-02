@@ -40,55 +40,59 @@ from xml.etree import ElementTree
 
 # Load and parse an XML file
 def parseXmlFile(fname):
-	try:
-		tree = ElementTree.parse(fname)		
-	except Exception as inst:
-		print ("error opening file: %s", inst)
-		return
-	return tree
+    try:
+        tree = ElementTree.parse(fname)
+    except Exception as inst:
+        print ("error opening file: %s", inst)
+        return
+    return tree
 
 
 
 def main():
-	# open up the output files
-	ftitle = open("pages.txt", 'w')
-	fuser = open("users.txt", 'w')
-	ftile_user = open("page_users.txt", 'w')
-	# read and parse the xml data into an element tree
-	tree = parseXmlFile("./enwiki-latest-stub-articles1.xml")
-	if tree is not None:
-		root = tree.getroot()
-		print "Root of the XML is %s", root.tag
-		#to get the list of titles in all the docs
-		count = 0
-		for child in root.iter('page'):
-			# this iterates over every page in the data
-			# use the elementree 'find' method 
-			# e.g. if child.find('tag name to find').text...
-			# to find the direct children of the page element
-			# see https://docs.python.org/2/library/xml.etree.elementtree.html
-			# for a tutorial on the elementtree library
-			page_title = child.find('title').text
-			page_id = child.find('id').text
-			if page_title.startswith(('America', 'Afghanistan')):
-				count += 1
-				ftitle.write('{}, {}\n'.format(page_id, page_title))
+    # open up the output files
+    ftitle = open("pages.txt", 'w')
+    fuser = open("users.txt", 'w')
+    ftile_user = open("page_users.txt", 'w')
+    # read and parse the xml data into an element tree
+    tree = parseXmlFile("./enwiki-latest-stub-articles1.xml")
+    if tree is None:
+        raise Exception('no XML!')
+    root = tree.getroot()
+    print "Root of the XML is %s", root.tag
 
-				contributor = child.find('contributor')
-				if contributor:
-					username = contributor.find('username').text
-					user_id = contributor.find('id').text
+    #to get the list of titles in all the docs
+    count = 0
+    for child in root.iter('page'):
+        # this iterates over every page in the data
+        # use the elementree 'find' method
+        # e.g. if child.find('tag name to find').text...
+        # to find the direct children of the page element
+        # see https://docs.python.org/2/library/xml.etree.elementtree.html
+        # for a tutorial on the elementtree library
+        page_title = child.find('title').text
+        page_id = child.find('id').text
+        if page_title.startswith(('America', 'Afghanistan')):
+            count += 1
+            ftitle.write('{}, {}\n'.format(page_id, page_title))
 
-					fuser.write('{}, {}\n'.format(user_id, username))
-					ftile_user.write('{}, {}\n'.format(page_id, user_id))
+            contributor = child.find('contributor')
+            if contributor:
+                username = contributor.find('username').text
+                user_id = contributor.find('id').text
 
-		ftitle.close()	
-		fuser.close()	
-		ftile_user.close()	
+                fuser.write('{}, {}\n'.format(user_id, username))
+                ftile_user.write('{}, {}\n'.format(page_id, user_id))
+
+    print 'Found {} pages that start with America or Afghanistan'.format(count)
+
+    ftitle.close()
+    fuser.close()
+    ftile_user.close()
 
 if __name__ == '__main__':
-	main()
-	
+    main()
+
 
 
 
