@@ -76,7 +76,6 @@ def main():
             if contributor is not None and contributor.find('username') is not None:
                 username = contributor.find('username').text
                 user_id = contributor.find('id').text
-                print username, user_id
 
                 fuser.write('{}, {}\n'.format(user_id, username))
                 ftile_user.write('{}, {}\n'.format(page_id, user_id))
