@@ -59,27 +59,24 @@ def main():
     if tree is None:
         raise Exception('no XML!')
     root = tree.getroot()
-    print "Root of the XML is %s", root.tag
 
     #to get the list of titles in all the docs
     count = 0
     for child in root.iter('page'):
         # this iterates over every page in the data
-        # use the elementree 'find' method
-        # e.g. if child.find('tag name to find').text...
-        # to find the direct children of the page element
-        # see https://docs.python.org/2/library/xml.etree.elementtree.html
-        # for a tutorial on the elementtree library
         page_title = child.find('title').text
         page_id = child.find('id').text
         if page_title.startswith(('America', 'Afghanistan')):
             count += 1
             ftitle.write('{}, {}\n'.format(page_id, page_title))
 
-            contributor = child.find('contributor')
-            if contributor:
+            revision = child.find('revision')
+            contributor = revision.find('contributor')
+            # if we have a username that contributed, log it
+            if contributor is not None and contributor.find('username') is not None:
                 username = contributor.find('username').text
                 user_id = contributor.find('id').text
+                print username, user_id
 
                 fuser.write('{}, {}\n'.format(user_id, username))
                 ftile_user.write('{}, {}\n'.format(page_id, user_id))
